@@ -92,3 +92,4 @@ create policy "Faculty Upload Assignment Files"
 on storage.objects for insert
 to authenticated
 with check (bucket_id = 'assignment-files');
+

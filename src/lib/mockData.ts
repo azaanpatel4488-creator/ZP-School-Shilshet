@@ -487,3 +487,4 @@ export const galleryItems: GalleryItem[] = [
     description_mr: "शिलशेत गावात आरोग्य व स्वच्छतेचा संदेश देणारी विद्यार्थ्यांची भव्य प्रभातफेरी.",
   },
 ];
+

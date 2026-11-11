@@ -595,3 +595,4 @@ export default function AssignmentsPage() {
     </div>
   );
 }
+

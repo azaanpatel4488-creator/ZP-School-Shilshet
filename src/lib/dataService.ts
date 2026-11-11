@@ -256,3 +256,4 @@ export async function updateInquiryStatus(
   setLocalData(STORAGE_KEY_INQUIRIES, updated);
   return true;
 }
+

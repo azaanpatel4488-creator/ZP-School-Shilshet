@@ -294,3 +294,4 @@ export const dictionary: Record<Language, DictionaryStrings> = {
     backToTop: "वरती जा",
   },
 };
+

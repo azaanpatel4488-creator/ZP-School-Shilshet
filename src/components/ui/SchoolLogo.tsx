@@ -129,3 +129,4 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
     </div>
   );
 };
+

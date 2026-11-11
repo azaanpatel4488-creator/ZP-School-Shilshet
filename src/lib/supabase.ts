@@ -143,3 +143,4 @@ export async function uploadAssignmentFile(file: File): Promise<string> {
 
   return URL.createObjectURL(file);
 }
+

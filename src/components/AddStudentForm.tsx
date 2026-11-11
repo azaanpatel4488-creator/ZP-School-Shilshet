@@ -489,3 +489,4 @@ export const AddStudentForm: React.FC<AddStudentFormProps> = ({
     </div>
   );
 };
+

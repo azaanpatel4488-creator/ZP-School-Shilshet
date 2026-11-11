@@ -1,25 +1,6 @@
-@import "tailwindcss";
-
-@theme {
-  --color-bordo: #6C151E;
-  --color-bordo-dark: #4D0E15;
-  --color-bordo-light: #851C27;
-  --color-bordo-subtle: #F9ECEE;
-
-  --color-pine: #0F3D3A;
-  --color-pine-light: #165551;
-  --color-pine-subtle: #E8F2F1;
-
-  --color-cream: #F5DABF;
-  --color-cream-soft: #FDF9F5;
-  --color-cream-border: #E8CFB5;
-
-  --color-slate-black: #1A1A1A;
-  --color-off-white: #FAF7F2;
-  --color-canvas-card: #FFFFFF;
-  --color-gold: #C69214;
-  --color-gold-light: #FBF4DE;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #FAF7F2;

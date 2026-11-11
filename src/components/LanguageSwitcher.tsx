@@ -39,3 +39,4 @@ export const LanguageSwitcher: React.FC<{ variant?: "compact" | "full" }> = ({ v
     </div>
   );
 };
+

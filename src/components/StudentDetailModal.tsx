@@ -268,3 +268,4 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
     </div>
   );
 };
+

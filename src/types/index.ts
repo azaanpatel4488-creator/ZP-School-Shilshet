@@ -72,3 +72,4 @@ export interface FacultyUser {
   name: string;
   role: "headmaster" | "teacher";
 }
+

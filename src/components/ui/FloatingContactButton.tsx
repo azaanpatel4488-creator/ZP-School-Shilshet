@@ -91,3 +91,4 @@ export const FloatingContactButton: React.FC = () => {
     </div>
   );
 };
+
