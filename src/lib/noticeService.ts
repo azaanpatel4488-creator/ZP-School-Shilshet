@@ -1,4 +1,5 @@
 import { SchoolNotice } from "@/types";
+import { supabase, isSupabaseConfigured } from "./supabase";
 
 const STORAGE_KEY_NOTICES = "zp_school_notices_v1";
 
@@ -70,6 +71,20 @@ export const initialNotices: SchoolNotice[] = [
 ];
 
 export async function getNotices(): Promise<SchoolNotice[]> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase
+        .from("notices")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (!error && data && data.length > 0) {
+        return data as SchoolNotice[];
+      }
+    } catch (err) {
+      console.warn("Supabase getNotices error, fallback to local:", err);
+    }
+  }
+
   if (typeof window === "undefined") return initialNotices;
   try {
     const raw = localStorage.getItem(STORAGE_KEY_NOTICES);
@@ -88,6 +103,29 @@ export async function saveNotice(
   data: Omit<SchoolNotice, "id" | "created_at">,
   idToEdit?: string
 ): Promise<SchoolNotice> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      if (idToEdit) {
+        const { data: updated, error } = await supabase
+          .from("notices")
+          .update(data)
+          .eq("id", idToEdit)
+          .select()
+          .single();
+        if (!error && updated) return updated as SchoolNotice;
+      } else {
+        const { data: inserted, error } = await supabase
+          .from("notices")
+          .insert(data)
+          .select()
+          .single();
+        if (!error && inserted) return inserted as SchoolNotice;
+      }
+    } catch (e) {
+      console.warn("Supabase saveNotice error, fallback to local:", e);
+    }
+  }
+
   const current = await getNotices();
   let updatedNotice: SchoolNotice;
 
@@ -123,6 +161,14 @@ export async function saveNotice(
 }
 
 export async function deleteNotice(id: string): Promise<boolean> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase.from("notices").delete().eq("id", id);
+    } catch (e) {
+      console.warn("Supabase deleteNotice error:", e);
+    }
+  }
+
   const current = await getNotices();
   const filtered = current.filter((n) => n.id !== id);
   if (typeof window !== "undefined") {
