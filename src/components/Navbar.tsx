@@ -21,6 +21,7 @@ import {
   GraduationCap,
   BookOpen,
   UserCheck,
+  Utensils,
 } from "lucide-react";
 
 export const Navbar: React.FC = () => {
@@ -40,6 +41,14 @@ export const Navbar: React.FC = () => {
               ? (language === "mr" ? "विद्यार्थी नोंदी (वर्ग १-५)" : "Student Registers")
               : (language === "mr" ? "माझ्या पाल्याची नोंद" : "My Child's Record"),
             icon: Users,
+            public: false,
+          },
+          {
+            href: "/attendance",
+            label: isFaculty
+              ? (language === "mr" ? "हजेरी व पोषण आहार" : "Attendance & MDM")
+              : (language === "mr" ? "आजची उपस्थिती" : "Today's Attendance"),
+            icon: Utensils,
             public: false,
           },
           {

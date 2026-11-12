@@ -74,3 +74,4 @@ export function getStudentReportCard(student: Student): ReportCardData {
     teacher_name_mr: "श्री. अकबर पटेल (वर्गशिक्षक)",
   };
 }
+

@@ -38,6 +38,29 @@ export interface ReportCardData {
   teacher_name_mr: string;
 }
 
+export interface AttendanceRecord {
+  date: string; // YYYY-MM-DD
+  student_id: string;
+  register_number: string;
+  student_name: string;
+  class_standard: number;
+  status: "present" | "absent";
+  meal_opt_out: boolean; // true if child is present but didn't take meal
+}
+
+export interface DailyAttendanceSummary {
+  date: string;
+  total_enrolled: number;
+  total_present: number;
+  total_absent: number;
+  total_meals: number;
+  attendance_percentage: number;
+  by_class: Record<
+    number,
+    { enrolled: number; present: number; absent: number; meals: number }
+  >;
+}
+
 export type MediaType = "text" | "image" | "document" | "youtube" | "url";
 
 export interface Assignment {
