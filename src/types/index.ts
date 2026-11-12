@@ -61,6 +61,23 @@ export interface DailyAttendanceSummary {
   >;
 }
 
+export type NoticeCategory = "urgent" | "holiday" | "exam" | "event" | "general";
+export type NoticeMediaType = "text" | "image" | "flyer" | "gif" | "video";
+
+export interface SchoolNotice {
+  id: string;
+  created_at: string;
+  title: string;
+  title_mr: string;
+  content: string;
+  content_mr?: string;
+  category: NoticeCategory;
+  media_type: NoticeMediaType;
+  media_url?: string;
+  is_pinned?: boolean;
+  author_name: string;
+}
+
 export type MediaType = "text" | "image" | "document" | "youtube" | "url";
 
 export interface Assignment {

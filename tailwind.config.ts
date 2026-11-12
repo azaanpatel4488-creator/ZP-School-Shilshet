@@ -34,6 +34,15 @@ const config: Config = {
           light: "#FBF4DE",
         },
       },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
+      },
+      animation: {
+        marquee: "marquee 28s linear infinite",
+      },
     },
   },
   plugins: [],

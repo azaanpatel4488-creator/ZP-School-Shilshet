@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { facultyMembers, galleryItems } from "@/lib/mockData";
 import { GalleryItem } from "@/types";
+import { NoticeBoard } from "@/components/NoticeBoard";
 import {
   ShieldCheck,
   BookOpen,
@@ -201,6 +202,11 @@ export default function HomePage() {
             </span>
           </div>
         </div>
+      </section>
+
+      {/* 2.5 LIVE DIGITAL NOTICE BOARD */}
+      <section className="container mx-auto px-4 max-w-7xl">
+        <NoticeBoard />
       </section>
 
       {/* 3. CORE INSTITUTIONAL PILLARS */}
