@@ -141,3 +141,4 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
     </div>
   );
 };
+

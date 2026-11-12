@@ -19,85 +19,126 @@ export const MarathiSpeakerButton: React.FC<MarathiSpeakerButtonProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      setIsSupported(false);
-    }
-
     return () => {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
+      if (typeof window !== "undefined") {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current = null;
+        }
       }
     };
   }, []);
 
   const handleSpeak = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (typeof window === "undefined") return;
 
-    if (!isSupported || typeof window === "undefined") return;
-
-    // If currently playing, stop
+    // If currently playing, stop both audio & speech synthesis
     if (isPlaying) {
-      window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
       setIsPlaying(false);
       return;
     }
 
     // Cancel any previous speech
-    window.speechSynthesis.cancel();
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
 
-    // Clean text of emojis or URLs for clear speech
+    // Clean text of markdown, URLs, symbols for natural speech
     const cleanText = text
       .replace(/https?:\/\/\S+/g, "")
-      .replace(/[•★\-\_\*]/g, " ")
+      .replace(/[•★\-\_\*#]/g, " ")
       .trim();
 
     if (!cleanText) return;
 
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utteranceRef.current = utterance;
-
-    // Detect Marathi or closest Devanagari voice
-    const voices = window.speechSynthesis.getVoices();
-    const marathiVoice =
-      voices.find(
+    // 1. Check for native browser Marathi voice (pre-installed on Android & modern devices)
+    let marathiVoice: SpeechSynthesisVoice | undefined = undefined;
+    if ("speechSynthesis" in window) {
+      const voices = window.speechSynthesis.getVoices();
+      marathiVoice = voices.find(
         (v) =>
           v.lang.toLowerCase().startsWith("mr") ||
           v.name.toLowerCase().includes("marathi")
-      ) ||
-      voices.find(
-        (v) =>
-          v.lang.toLowerCase().startsWith("hi") ||
-          v.name.toLowerCase().includes("hindi")
-      ) ||
-      voices.find((v) => v.lang.toLowerCase().includes("in"));
-
-    if (marathiVoice) {
-      utterance.voice = marathiVoice;
-      utterance.lang = marathiVoice.lang;
-    } else {
-      utterance.lang = "mr-IN";
+      );
     }
 
-    // Gentle, clear cadence for young kids & parents
-    utterance.rate = 0.85;
-    utterance.pitch = 1.0;
+    if (marathiVoice && "speechSynthesis" in window) {
+      // Use native device engine
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utteranceRef.current = utterance;
+      utterance.voice = marathiVoice;
+      utterance.lang = marathiVoice.lang;
+      utterance.rate = 0.85; // Clear, comfortable cadence for primary parents & kids
+      utterance.pitch = 1.0;
 
-    utterance.onstart = () => {
-      setIsPlaying(true);
-    };
+      utterance.onstart = () => setIsPlaying(true);
+      utterance.onend = () => setIsPlaying(false);
+      utterance.onerror = () => setIsPlaying(false);
 
-    utterance.onend = () => {
-      setIsPlaying(false);
-    };
+      window.speechSynthesis.speak(utterance);
+    } else {
+      // 2. High-Fidelity Cloud Marathi Voice fallback
+      // (Guarantees fluent native Marathi pronunciation even on Windows desktops without Marathi voice packs)
+      try {
+        const snippet = cleanText.slice(0, 180);
+        const streamUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=mr&client=tw-ob&q=${encodeURIComponent(
+          snippet
+        )}`;
+        const audio = new Audio(streamUrl);
+        audioRef.current = audio;
 
-    utterance.onerror = (event) => {
-      console.warn("Speech synthesis notice:", event);
-      setIsPlaying(false);
-    };
+        audio.onplay = () => setIsPlaying(true);
+        audio.onended = () => {
+          setIsPlaying(false);
+          audioRef.current = null;
+        };
+        audio.onerror = () => {
+          // If network stream blocked, fall back to whatever voice the device has
+          if ("speechSynthesis" in window) {
+            const fallbackUtterance = new SpeechSynthesisUtterance(cleanText);
+            fallbackUtterance.lang = "mr-IN";
+            fallbackUtterance.rate = 0.85;
+            fallbackUtterance.onstart = () => setIsPlaying(true);
+            fallbackUtterance.onend = () => setIsPlaying(false);
+            fallbackUtterance.onerror = () => setIsPlaying(false);
+            window.speechSynthesis.speak(fallbackUtterance);
+          } else {
+            setIsPlaying(false);
+          }
+        };
 
-    window.speechSynthesis.speak(utterance);
+        audio.play().catch(() => {
+          if ("speechSynthesis" in window) {
+            const fallbackUtterance = new SpeechSynthesisUtterance(cleanText);
+            fallbackUtterance.lang = "mr-IN";
+            window.speechSynthesis.speak(fallbackUtterance);
+          } else {
+            setIsPlaying(false);
+          }
+        });
+      } catch (err) {
+        console.error("Audio playback error:", err);
+        setIsPlaying(false);
+      }
+    }
   };
 
   if (!isSupported) return null;
@@ -129,3 +170,4 @@ export const MarathiSpeakerButton: React.FC<MarathiSpeakerButtonProps> = ({
     </button>
   );
 };
+
