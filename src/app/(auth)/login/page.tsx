@@ -34,19 +34,18 @@ export default function LoginPage() {
     facultySignUp,
     parentLogin,
     parentSignUp,
-    quickDemoLogin,
   } = useAuth();
 
   // Tabs
   const [role, setRole] = useState<"faculty" | "parent">("faculty");
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
-  // Faculty fields
-  const [schoolEmail, setSchoolEmail] = useState("zpshilshet@gmail.com");
-  const [facultyEmail, setFacultyEmail] = useState("patelakbar1679@gmail.com");
+  // Faculty fields - start completely blank
+  const [schoolEmail, setSchoolEmail] = useState("");
+  const [facultyEmail, setFacultyEmail] = useState("");
   const [facultyPassword, setFacultyPassword] = useState("");
 
-  // Parent fields
+  // Parent fields - start completely blank
   const [grNumber, setGrNumber] = useState("");
   const [last6Mobile, setLast6Mobile] = useState("");
   const [parentPassword, setParentPassword] = useState("");
@@ -250,9 +249,10 @@ export default function LoginPage() {
                   <input
                     type="email"
                     required
+                    autoComplete="off"
                     value={schoolEmail}
                     onChange={(e) => setSchoolEmail(e.target.value)}
-                    placeholder="zpshilshet@gmail.com"
+                    placeholder={language === "mr" ? "उदा. zpshilshet@gmail.com" : "e.g. zpshilshet@gmail.com"}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#6C151E]"
                   />
                 </div>
@@ -268,9 +268,10 @@ export default function LoginPage() {
                   <input
                     type="email"
                     required
+                    autoComplete="off"
                     value={facultyEmail}
                     onChange={(e) => setFacultyEmail(e.target.value)}
-                    placeholder="patelakbar1679@gmail.com"
+                    placeholder={language === "mr" ? "उदा. patelakbar1679@gmail.com" : "e.g. patelakbar1679@gmail.com"}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#6C151E]"
                   />
                 </div>
@@ -292,6 +293,7 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
+                    autoComplete="new-password"
                     value={facultyPassword}
                     onChange={(e) => setFacultyPassword(e.target.value)}
                     placeholder="••••••••••••"
@@ -356,9 +358,10 @@ export default function LoginPage() {
                   <input
                     type="text"
                     required
+                    autoComplete="off"
                     value={grNumber}
                     onChange={(e) => setGrNumber(e.target.value.replace(/\D/g, ""))}
-                    placeholder="e.g. 1041"
+                    placeholder={language === "mr" ? "उदा. १०४१" : "e.g. 1041"}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#0F3D3A]"
                   />
                 </div>
@@ -378,9 +381,10 @@ export default function LoginPage() {
                       type="text"
                       maxLength={6}
                       required
+                      autoComplete="off"
                       value={last6Mobile}
                       onChange={(e) => setLast6Mobile(e.target.value.replace(/\D/g, ""))}
-                      placeholder="e.g. 412091"
+                      placeholder={language === "mr" ? "उदा. ४१२०९१" : "e.g. 412091"}
                       className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#0F3D3A]"
                     />
                   </div>
@@ -403,6 +407,7 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
+                    autoComplete="new-password"
                     value={parentPassword}
                     onChange={(e) => setParentPassword(e.target.value)}
                     placeholder="••••••••"
@@ -440,44 +445,6 @@ export default function LoginPage() {
               </button>
             </form>
           )}
-
-          {/* Quick-Fill Helpers for Reviewer Testing */}
-          <div className="pt-4 border-t border-stone-200 space-y-2">
-            <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
-              ⚡ Quick Testing Shortcuts:
-            </span>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => {
-                  setRole("faculty");
-                  setMode("signin");
-                  setSchoolEmail("zpshilshet@gmail.com");
-                  setFacultyEmail("patelakbar1679@gmail.com");
-                  setFacultyPassword("shilshet2026");
-                }}
-                className="p-2 rounded-lg bg-stone-100 hover:bg-[#6C151E]/10 hover:text-[#6C151E] text-stone-700 font-semibold border border-stone-300 text-left transition-colors"
-              >
-                <p className="font-bold text-[11px]">Fill Faculty</p>
-                <p className="text-[10px] text-stone-500 font-mono truncate">patelakbar1679@...</p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setRole("parent");
-                  setMode("signup");
-                  setGrNumber("1041");
-                  setLast6Mobile("412091");
-                  setParentPassword("1234");
-                }}
-                className="p-2 rounded-lg bg-stone-100 hover:bg-[#0F3D3A]/10 hover:text-[#0F3D3A] text-stone-700 font-semibold border border-stone-300 text-left transition-colors"
-              >
-                <p className="font-bold text-[11px]">Fill Student #1041</p>
-                <p className="text-[10px] text-stone-500 font-mono">Aarav Baraf (Cls 1)</p>
-              </button>
-            </div>
-          </div>
 
           <div className="text-center pt-2 text-[11px] text-stone-400 flex items-center justify-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5 text-stone-500" />
