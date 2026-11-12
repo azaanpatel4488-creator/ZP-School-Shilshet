@@ -39,7 +39,8 @@ create table if not exists public.assignments (
     media_url text,
     audio_url text,
     faculty_id uuid references auth.users(id),
-    author_name text default 'श्री. अकबर पटेल (शिक्षक)'
+    author_name text default 'श्री. अकबर पटेल (शिक्
+    षक)'
 );
 
 -- 3. DIGITAL NOTICE BOARD TABLE
@@ -88,46 +89,12 @@ create table if not exists public.inquiries (
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ==============================================================================
 
-alter table public.students enable row level security;
-alter table public.assignments enable row level security;
-alter table public.notices enable row level security;
-alter table public.attendance_records enable row level security;
-alter table public.inquiries enable row level security;
-
--- Students Policies
-create policy "Allow read access to students for all visitors"
-on public.students for select to anon, authenticated using (true);
-
-create policy "Faculty full management for students"
-on public.students for all to authenticated using (true) with check (true);
-
--- Assignments Policies
-create policy "Allow read access to assignments for all"
-on public.assignments for select to anon, authenticated using (true);
-
-create policy "Faculty full management for assignments"
-on public.assignments for all to authenticated using (true) with check (true);
-
--- Notices Policies
-create policy "Allow read access to notices for all"
-on public.notices for select to anon, authenticated using (true);
-
-create policy "Faculty full management for notices"
-on public.notices for all to authenticated using (true) with check (true);
-
--- Attendance Policies
-create policy "Allow read access to attendance for all"
-on public.attendance_records for select to anon, authenticated using (true);
-
-create policy "Faculty full management for attendance"
-on public.attendance_records for all to authenticated using (true) with check (true);
-
--- Inquiries Policies
-create policy "Public can submit inquiries"
-on public.inquiries for insert to anon, authenticated with check (true);
-
-create policy "Faculty can view and manage inquiries"
-on public.inquiries for all to authenticated using (true) with check (true);
+-- Allow full access to school portal tables
+alter table public.students disable row level security;
+alter table public.assignments disable row level security;
+alter table public.notices disable row level security;
+alter table public.attendance_records disable row level security;
+alter table public.inquiries disable row level security;
 
 -- ==============================================================================
 -- STORAGE BUCKETS (FOR PHOTOS, HOMEWORK, AND FLYERS)
@@ -140,26 +107,21 @@ values
   ('notice-media', 'notice-media', true)
 on conflict (id) do nothing;
 
-create policy "Public Access to Student Photos"
-on storage.objects for select
-using (bucket_id = 'student-photos');
+drop policy if exists "Public Access to Student Photos" on storage.objects;
+create policy "Public Access to Student Photos" on storage.objects for select using (bucket_id = 'student-photos');
 
-create policy "Faculty Upload Student Photos"
-on storage.objects for insert to authenticated
-with check (bucket_id = 'student-photos');
+drop policy if exists "Allow uploads to student-photos" on storage.objects;
+create policy "Allow uploads to student-photos" on storage.objects for insert to anon, authenticated with check (bucket_id = 'student-photos');
 
-create policy "Public Access to Assignment Files"
-on storage.objects for select
-using (bucket_id = 'assignment-files');
+drop policy if exists "Public Access to Assignment Files" on storage.objects;
+create policy "Public Access to Assignment Files" on storage.objects for select using (bucket_id = 'assignment-files');
 
-create policy "Faculty Upload Assignment Files"
-on storage.objects for insert to authenticated
-with check (bucket_id = 'assignment-files');
+drop policy if exists "Allow uploads to assignment-files" on storage.objects;
+create policy "Allow uploads to assignment-files" on storage.objects for insert to anon, authenticated with check (bucket_id = 'assignment-files');
 
-create policy "Public Access to Notice Media"
-on storage.objects for select
-using (bucket_id = 'notice-media');
+drop policy if exists "Public Access to Notice Media" on storage.objects;
+create policy "Public Access to Notice Media" on storage.objects for select using (bucket_id = 'notice-media');
 
-create policy "Faculty Upload Notice Media"
-on storage.objects for insert to authenticated
+drop policy if exists "Allow uploads to notice-media" on storage.objects;
+create policy "Allow uploads to notice-media" on storage.objects for insert to anon, authenticated with check (bucket_id = 'notice-media');
 with check (bucket_id = 'notice-media');

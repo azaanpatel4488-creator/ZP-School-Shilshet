@@ -8,6 +8,7 @@ import { getStudents } from "@/lib/dataService";
 import {
   getAttendanceForDate,
   saveAttendanceForDate,
+  fetchAttendanceFromCloud,
   calculateSummary,
   formatWhatsAppKendraReport,
 } from "@/lib/attendanceService";
@@ -58,8 +59,15 @@ export default function AttendancePage() {
       try {
         const studentList = await getStudents();
         setStudents(studentList);
-        const attendanceList = getAttendanceForDate(selectedDate, studentList);
-        setRecords(attendanceList);
+        
+        // Try cloud fetch first
+        const cloudRecords = await fetchAttendanceFromCloud(selectedDate);
+        if (cloudRecords && cloudRecords.length > 0) {
+          setRecords(cloudRecords);
+        } else {
+          const attendanceList = getAttendanceForDate(selectedDate, studentList);
+          setRecords(attendanceList);
+        }
       } catch (err) {
         console.error(err);
         toast.error("Failed to load attendance records.");

@@ -1,6 +1,24 @@
 import { Student, AttendanceRecord, DailyAttendanceSummary } from "@/types";
+import { supabase, isSupabaseConfigured } from "./supabase";
 
 const STORAGE_KEY_ATTENDANCE = "zp_attendance_records_v2";
+
+export async function fetchAttendanceFromCloud(dateStr: string): Promise<AttendanceRecord[] | null> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase
+        .from("attendance_records")
+        .select("*")
+        .eq("date", dateStr);
+      if (!error && data && data.length > 0) {
+        return data as AttendanceRecord[];
+      }
+    } catch (e) {
+      console.warn("Supabase attendance fetch error:", e);
+    }
+  }
+  return null;
+}
 
 export function getAttendanceForDate(
   dateStr: string,
@@ -53,15 +71,38 @@ export function getAttendanceForDate(
   }
 }
 
-export function saveAttendanceForDate(dateStr: string, records: AttendanceRecord[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY_ATTENDANCE);
-    const allRecords: Record<string, AttendanceRecord[]> = raw ? JSON.parse(raw) : {};
-    allRecords[dateStr] = records;
-    localStorage.setItem(STORAGE_KEY_ATTENDANCE, JSON.stringify(allRecords));
-  } catch (e) {
-    console.error("Attendance save error", e);
+export async function saveAttendanceForDate(dateStr: string, records: AttendanceRecord[]): Promise<void> {
+  // 1. Save locally for instant UI responsiveness
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_ATTENDANCE);
+      const allRecords: Record<string, AttendanceRecord[]> = raw ? JSON.parse(raw) : {};
+      allRecords[dateStr] = records;
+      localStorage.setItem(STORAGE_KEY_ATTENDANCE, JSON.stringify(allRecords));
+    } catch (e) {
+      console.error("Attendance save error", e);
+    }
+  }
+
+  // 2. Sync to Supabase cloud if configured
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const cleanRecords = records.map((r) => ({
+        date: r.date,
+        student_id: r.student_id,
+        register_number: r.register_number,
+        student_name: r.student_name,
+        class_standard: r.class_standard,
+        status: r.status,
+        meal_opt_out: Boolean(r.meal_opt_out),
+      }));
+
+      await supabase.from("attendance_records").upsert(cleanRecords, {
+        onConflict: "date,student_id",
+      });
+    } catch (err) {
+      console.warn("Supabase attendance sync error:", err);
+    }
   }
 }
 
