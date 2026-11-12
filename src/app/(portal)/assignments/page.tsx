@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { Assignment, MediaType } from "@/types";
 import { getAssignments, createAssignment } from "@/lib/dataService";
@@ -25,15 +26,25 @@ import {
   Loader2,
   Filter,
   CheckCircle,
+  Lock,
+  LogIn,
+  UserCheck,
 } from "lucide-react";
 
 export default function AssignmentsPage() {
   const { t, language } = useLanguage();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, isFaculty, isParent, user } = useAuth();
 
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedClassFilter, setSelectedClassFilter] = useState<number | null>(null);
+
+  // If Parent: default filter to child's class
+  useEffect(() => {
+    if (isParent && user?.class_standard) {
+      setSelectedClassFilter(user.class_standard);
+    }
+  }, [isParent, user]);
 
   // New Dispatch Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -164,6 +175,39 @@ export default function AssignmentsPage() {
     }
   };
 
+  // 1. GATE: IF NOT AUTHENTICATED
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-20 max-w-xl text-center space-y-6">
+        <div className="w-16 h-16 rounded-2xl bg-[#6C151E]/10 text-[#6C151E] flex items-center justify-center mx-auto">
+          <Send className="w-8 h-8 text-[#6C151E]" />
+        </div>
+        <div className="space-y-2">
+          <span className="px-3 py-1 rounded-full bg-[#6C151E]/10 text-[#6C151E] font-bold text-xs uppercase tracking-wider">
+            Protected Institutional Area
+          </span>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-stone-900">
+            {language === "mr" ? "गृहपाठ व अभ्यास पाहण्यासाठी प्रवेश आवश्यक" : "Authentication Required"}
+          </h1>
+          <p className="text-xs md:text-sm text-stone-600 max-w-md mx-auto leading-relaxed">
+            {language === "mr"
+              ? "शालेय गृहपाठ, परिपत्रके आणि शैक्षणिक अभ्यास पाहण्यासाठी कृपया अधिकृत शिक्षक किंवा पालक म्हणून लॉगिन करा."
+              : "Curriculum materials, homework sheets, and class circulars are restricted to verified school faculty and enrolled student-parents."}
+          </p>
+        </div>
+        <div className="pt-2">
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#6C151E] hover:bg-[#851C27] text-white font-bold text-xs shadow-md transition-all active:scale-95"
+          >
+            <LogIn className="w-4 h-4" />
+            <span>{language === "mr" ? "प्रवेश करा (Sign In)" : "Sign In to Access"}</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header & Title */}
@@ -172,60 +216,79 @@ export default function AssignmentsPage() {
           <div className="flex items-center gap-2 text-xs font-semibold text-[#6C151E] uppercase tracking-wider mb-1">
             <Send className="w-4 h-4 text-[#6C151E]" />
             <span>
-              {language === "mr" ? "माध्यम व गृहपाठ प्रसारक" : "Media & Assignment Broadcast"}
+              {isFaculty
+                ? (language === "mr" ? "माध्यम व गृहपाठ प्रसारक" : "Media & Assignment Broadcast")
+                : (language === "mr" ? "पालक अभ्यास कक्ष" : "Class Assignments & Circulars")}
             </span>
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-stone-900 tracking-tight">
             {t.assignmentsTitle}
           </h1>
           <p className="text-xs md:text-sm text-stone-600 mt-1 max-w-2xl">
-            {t.assignmentsSubtitle}
+            {isFaculty
+              ? t.assignmentsSubtitle
+              : (language === "mr"
+                  ? "आपल्या पाल्यासाठी शिक्षकांनी दिलेला गृहपाठ, शैक्षणिक व्हिडिओ व परिपत्रके."
+                  : "Review worksheets, study videos, and circulars issued by school faculty for your child.")}
           </p>
         </div>
 
-        {/* Action Button */}
-        <div>
-          <button
-            type="button"
-            onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold rounded-lg bg-[#6C151E] hover:bg-[#851C27] text-white shadow-md active:scale-95 transition-all"
-          >
-            <Plus className="w-4 h-4" />
-            <span>{t.newAssignmentBtn}</span>
-          </button>
-        </div>
+        {/* Action Button: Faculty only */}
+        {isFaculty && (
+          <div>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold rounded-lg bg-[#6C151E] hover:bg-[#851C27] text-white shadow-md active:scale-95 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>{t.newAssignmentBtn}</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Class Filter Bar */}
+      {/* Class Filter Bar: Faculty sees all, Parent sees their child's target class */}
       <div className="py-6 flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <button
-            type="button"
-            onClick={() => setSelectedClassFilter(null)}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-              selectedClassFilter === null
-                ? "bg-[#6C151E] text-white border-[#6C151E] shadow-xs"
-                : "bg-white text-stone-700 border-stone-300 hover:border-[#6C151E]"
-            }`}
-          >
-            {t.classSelectorAll}
-          </button>
-
-          {[1, 2, 3, 4, 5].map((cls) => (
+        {isFaculty ? (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             <button
-              key={cls}
               type="button"
-              onClick={() => setSelectedClassFilter(cls)}
+              onClick={() => setSelectedClassFilter(null)}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                selectedClassFilter === cls
+                selectedClassFilter === null
                   ? "bg-[#6C151E] text-white border-[#6C151E] shadow-xs"
                   : "bg-white text-stone-700 border-stone-300 hover:border-[#6C151E]"
               }`}
             >
-              {language === "mr" ? `इयत्ता ${cls}` : `Class ${cls}`}
+              {t.classSelectorAll}
             </button>
-          ))}
-        </div>
+
+            {[1, 2, 3, 4, 5].map((cls) => (
+              <button
+                key={cls}
+                type="button"
+                onClick={() => setSelectedClassFilter(cls)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  selectedClassFilter === cls
+                    ? "bg-[#6C151E] text-white border-[#6C151E] shadow-xs"
+                    : "bg-white text-stone-700 border-stone-300 hover:border-[#6C151E]"
+                }`}
+              >
+                {language === "mr" ? `इयत्ता ${cls}` : `Class ${cls}`}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#E8F2F1] text-[#0F3D3A] text-xs font-bold border border-[#0F3D3A]/20">
+            <UserCheck className="w-3.5 h-3.5" />
+            <span>
+              {language === "mr"
+                ? `इयत्ता ${user?.class_standard || 1} वी व सर्व वर्गांसाठी अभ्यास`
+                : `Class ${user?.class_standard || 1} & General School Notices`}
+            </span>
+          </div>
+        )}
 
         <span className="text-xs text-stone-500 font-medium">
           {assignments.length} {language === "mr" ? "सक्रिय संदेश" : "active broadcasts"}

@@ -35,7 +35,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
   onDelete,
 }) => {
   const { t, language } = useLanguage();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isFaculty } = useAuth();
 
   if (!isOpen || !student) return null;
 
@@ -239,29 +239,31 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
           </button>
 
           <div className="flex items-center gap-2">
-            {isAuthenticated && (
-              <button
-                type="button"
-                onClick={() => {
-                  if (confirm(t.confirmDelete)) {
-                    onDelete(student.id);
-                  }
-                }}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>{t.deleteStudent}</span>
-              </button>
-            )}
+            {isFaculty && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm(t.confirmDelete)) {
+                      onDelete(student.id);
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{t.deleteStudent}</span>
+                </button>
 
-            <button
-              type="button"
-              onClick={() => onEdit(student)}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg bg-[#6C151E] text-white hover:bg-[#851C27] active:scale-95 transition-all shadow-sm"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>{t.editStudent}</span>
-            </button>
+                <button
+                  type="button"
+                  onClick={() => onEdit(student)}
+                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg bg-[#6C151E] text-white hover:bg-[#851C27] active:scale-95 transition-all shadow-sm"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>{t.editStudent}</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -18,20 +18,52 @@ import {
   LogOut,
   Home,
   ShieldCheck,
+  GraduationCap,
+  BookOpen,
+  UserCheck,
 } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { t, language } = useLanguage();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isFaculty, isParent, logout } = useAuth();
 
+  // Dynamic Navigation Items based on Role
   const navLinks = [
-    { href: "/", label: t.navHome, icon: Home },
-    { href: "/students", label: t.navStudents, icon: Users },
-    { href: "/assignments", label: t.navAssignments, icon: Send },
-    { href: "/gallery", label: t.navGallery, icon: GalleryIcon },
-    { href: "/inquiries", label: t.navInquiries, icon: HelpCircle },
+    { href: "/", label: t.navHome, icon: Home, public: true },
+    ...(isAuthenticated
+      ? [
+          {
+            href: "/students",
+            label: isFaculty
+              ? (language === "mr" ? "विद्यार्थी नोंदी (वर्ग १-५)" : "Student Registers")
+              : (language === "mr" ? "माझ्या पाल्याची नोंद" : "My Child's Record"),
+            icon: Users,
+            public: false,
+          },
+          {
+            href: "/assignments",
+            label: isFaculty
+              ? (language === "mr" ? "अभ्यास प्रसारक" : "Assignment Dispatcher")
+              : (language === "mr" ? "शालेय गृहपाठ" : "Class Assignments"),
+            icon: Send,
+            public: false,
+          },
+        ]
+      : []),
+    {
+      href: "/gallery",
+      label: language === "mr" ? "गॅलरी व शिक्षक" : "Gallery & Faculty",
+      icon: GalleryIcon,
+      public: true,
+    },
+    {
+      href: "/inquiries",
+      label: language === "mr" ? "प्रवेश व चौकशी" : "Admissions & Inquiries",
+      icon: HelpCircle,
+      public: true,
+    },
   ];
 
   const isActive = (href: string) => {
@@ -46,12 +78,12 @@ export const Navbar: React.FC = () => {
         <div className="container mx-auto flex items-center justify-between">
           <span className="truncate">
             {language === "mr"
-              ? "महाराष्ट्र शासन • जिल्हा परिषद ठाणे / पालघर • प्राथमिक शिक्षण विभाग"
+              ? "महाराष्ट्र शासन • जिल्हा परिषद पालघर • प्राथमिक शिक्षण विभाग • यु-डायस: २७३६१८०९५०१"
               : "Govt. of Maharashtra • Rural Education Directorate • U-DISE: 27361809501"}
           </span>
           <div className="hidden sm:flex items-center gap-4 text-[11px]">
             <a href="mailto:headmaster@zpshilshet.edu.in" className="hover:text-white transition-colors">
-              ✉️ headmaster@zpshilshet.edu.in
+              ✉️ zpshilshet@gmail.com
             </a>
             <span className="text-stone-400">|</span>
             <span className="text-[#F5DABF] font-mono">Affiliation: MSBSHSE</span>
@@ -106,26 +138,35 @@ export const Navbar: React.FC = () => {
 
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
-                <span className="text-[11px] px-2 py-1 rounded bg-[#0F3D3A] text-[#F5DABF] border border-[#0F3D3A] font-medium hidden xl:inline-block">
-                  <ShieldCheck className="w-3 h-3 inline mr-1 text-[#D4AF37]" />
-                  {user?.role === "headmaster" ? "Headmaster" : "Faculty"}
+                <span className="text-[11px] px-2.5 py-1 rounded-md bg-[#0F3D3A] text-[#F5DABF] border border-[#0F3D3A] font-medium hidden xl:inline-block max-w-[180px] truncate">
+                  {isFaculty ? (
+                    <>
+                      <GraduationCap className="w-3 h-3 inline mr-1 text-[#D4AF37]" />
+                      Faculty
+                    </>
+                  ) : (
+                    <>
+                      <UserCheck className="w-3 h-3 inline mr-1 text-[#D4AF37]" />
+                      {user?.student_name ? user.student_name.split(" ")[0] : "Parent"}
+                    </>
+                  )}
                 </span>
                 <button
                   onClick={() => logout()}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-[#0F3D3A] hover:bg-[#165551] text-white border border-[#D4AF37]/40 shadow-xs transition-all active:scale-95"
-                  title="Sign out of faculty session"
+                  title="Sign out of current session"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>{t.navLogout}</span>
+                  <span>{language === "mr" ? "बाहेर पडा" : "Sign Out"}</span>
                 </button>
               </div>
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-md bg-[#F5DABF] text-[#6C151E] hover:bg-white shadow-xs transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-md bg-[#F5DABF] text-[#6C151E] hover:bg-white shadow-xs transition-all active:scale-95"
               >
                 <LogIn className="w-3.5 h-3.5" />
-                <span>{t.navLogin}</span>
+                <span>{language === "mr" ? "प्रवेश (Sign In)" : "Sign In / Register"}</span>
               </Link>
             )}
           </div>
@@ -150,7 +191,7 @@ export const Navbar: React.FC = () => {
           <div className="pb-2 border-b border-stone-700/50 mb-2">
             {isAuthenticated ? (
               <div className="flex items-center justify-between text-xs text-[#F5DABF]">
-                <span>{user?.name}</span>
+                <span className="font-semibold">{user?.name}</span>
                 <span className="px-2 py-0.5 rounded bg-[#0F3D3A] text-white uppercase text-[10px]">
                   {user?.role}
                 </span>
@@ -201,7 +242,7 @@ export const Navbar: React.FC = () => {
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#F5DABF] text-[#6C151E] text-sm font-bold"
               >
                 <LogIn className="w-4 h-4" />
-                <span>{t.navLogin}</span>
+                <span>{language === "mr" ? "प्रवेश (Sign In)" : "Sign In / Register"}</span>
               </Link>
             )}
           </div>
@@ -210,4 +251,3 @@ export const Navbar: React.FC = () => {
     </header>
   );
 };
-

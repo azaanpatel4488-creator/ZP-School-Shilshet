@@ -50,7 +50,6 @@ export interface FacultyMember {
   qualification: string;
   experienceYears: number;
   photo_url: string;
-  phone?: string;
   email?: string;
 }
 
@@ -66,10 +65,25 @@ export interface GalleryItem {
   description_mr: string;
 }
 
-export interface FacultyUser {
+export type UserRole = "faculty" | "parent";
+
+export interface AppUser {
   id: string;
-  email: string;
+  role: UserRole;
   name: string;
-  role: "headmaster" | "teacher";
+  email?: string; // For faculty
+  school_email?: string; // zpshilshet@gmail.com
+  student_id?: string; // For parent
+  student_name?: string; // For parent
+  class_standard?: number; // For parent
+  register_number?: string; // For parent
 }
 
+export interface RegisteredAccount {
+  id: string;
+  role: UserRole;
+  identifier: string; // Faculty email or student GR number
+  secondary_identifier?: string; // School email or parent mobile last 6 digits
+  password_hash: string;
+  user_data: AppUser;
+}

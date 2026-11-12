@@ -6,7 +6,8 @@ import Image from "next/image";
 import { SchoolLogo } from "@/components/ui/SchoolLogo";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { initialAssignments } from "@/lib/mockData";
+import { facultyMembers, galleryItems } from "@/lib/mockData";
+import { GalleryItem } from "@/types";
 import {
   ShieldCheck,
   BookOpen,
@@ -15,21 +16,21 @@ import {
   Award,
   ChevronDown,
   ArrowRight,
-  Sparkles,
-  Phone,
-  Mail,
   GraduationCap,
   Calendar,
   CheckCircle2,
-  FileText,
-  MapPin,
-  ExternalLink,
+  Mail,
+  Image as ImageIcon,
+  LogIn,
+  UserCheck,
+  X,
 } from "lucide-react";
 
 export default function HomePage() {
   const { t, language } = useLanguage();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isFaculty, isParent, user } = useAuth();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [activePhoto, setActivePhoto] = useState<GalleryItem | null>(null);
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -43,30 +44,29 @@ export default function HomePage() {
       a_mr: "मोखाडा व ग्रामीण भागातील शाळांमध्ये पावसाळ्यातील ओलावा, वाळवी आणि कागद जीर्ण झाल्यामुळे जुन्या नोंदवह्यांचे नुकसान होण्याची भीती असते. हे पोर्टल जनरल रजिस्टर (GR), आधार, आणि पेन (PEN) आयडी सुरक्षित डिजिटल स्वरूपात साठवून कायमस्वरूपी सुरक्षितता प्रदान करते.",
     },
     {
+      q_en: "How do parents log in to view their child's assignments and progress?",
+      q_mr: "पालक आपल्या पाल्याचा गृहपाठ आणि प्रगती पाहण्यासाठी कसे लॉगिन करू शकतात?",
+      a_en: "Parents click 'Sign In', choose the Student/Parent tab, enter their child's General Register (GR) Number, and verify with the last 6 digits of their registered mobile number. Once set, they can log in anytime with their personal password.",
+      a_mr: "पालक 'प्रवेश (Sign In)' बटणावर क्लिक करून विद्यार्थी/पालक टॅब निवडतात, पाल्याचा GR नंबर आणि मोबाईलचे शेवटचे ६ अंक टाकून एकदा पासवर्ड तयार करतात. त्यानंतर कधीही थेट लॉगिन करू शकतात.",
+    },
+    {
       q_en: "What documents are required for admission into Classes 1 to 5?",
       q_mr: "इयत्ता १ ली ते ५ वी मध्ये प्रवेशासाठी कोणती कागदपत्रे लागतात?",
       a_en: "For Class 1: Child's Birth Certificate, Aadhaar Card, Passport Photograph, and Parent Contact Number. For Classes 2 to 5: Original Transfer Certificate (TC/LC) from the previous school, Student Aadhaar Card, and Bank Passbook copy for DBT scholarship linking.",
       a_mr: "इयत्ता पहिलीसाठी: बालकाचा जन्मदाखला, आधार कार्ड, पासपोर्ट फोटो व पालकांचा मोबाईल नंबर. इयत्ता २ री ते ५ वी साठी: मागील शाळेचा शाळा सोडल्याचा दाखला (दाखला/TC), आधार कार्ड, आणि शिष्यवृत्तीसाठी बँक पासबुक झेरॉक्स.",
     },
     {
-      q_en: "How do parents receive homework and educational broadcasts?",
-      q_mr: "पालकांना गृहपाठ आणि शैक्षणिक सूचना कशा प्राप्त होतात?",
-      a_en: "Faculty dispatches homework sheets, YouTube lessons, and circulars directly from the Assignment Dispatcher. With one click, notices can be broadcast to village parent WhatsApp groups or reviewed on the public school portal without needing an app install.",
-      a_mr: "शिक्षक आपल्या अभ्यास प्रसारक डॅशबोर्डवरून गृहपाठ, शैक्षणिक व्हिडिओ आणि परिपत्रके थेट प्रकाशित करतात. पालक कोणत्याही अतिरिक्त ॲपशिवाय एका क्लिकवर व्हॉट्सॲपवर किंवा शाळेच्या पोर्टलवर हा अभ्यास पाहू शकतात.",
-    },
-    {
       q_en: "Are student Aadhaar and bank details kept confidential?",
       q_mr: "विद्यार्थ्यांचे आधार व बँक तपशील सुरक्षित आणि गोपनीय राहतात का?",
       a_en: "Yes. All student mutations and banking identifiers are locked behind strict faculty authentication and database row-level security (RLS). Only authenticated teachers and the Headmaster possess access to sensitive DBT scholarship registers.",
-      a_mr: "होय. सर्व बँक खाती, आधार आणि गोपनीय माहिती सुरक्षित डेटाबेस व रो-लेव्हल सिक्युरिटी (RLS) ने संरक्षित आहे. केवळ अधिकृत शिक्षक आणि मुख्याध्यापकच या नोंदी तपासू आणि संपादित करू शकतात.",
+      a_mr: "होय. सर्व बँक खाती, आधार आणि गोपनीय माहिती सुरक्षित डेटाबेस व रो-लेव्हल सिक्युरिटी (RLS) ने संरक्षित आहे. केवळ अधिकृत शिक्षकच या नोंदी तपासू आणि संपादित करू शकतात.",
     },
   ];
 
   return (
     <div className="space-y-16 pb-16">
-      {/* 1. HERO SECTION WITH CLEAR ABOVE-THE-FOLD VALUE PROPOSITION */}
+      {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#6C151E] via-[#591118] to-[#4D0E15] text-white pt-10 pb-20 md:pb-28">
-        {/* Subtle patterned overlay */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#F5DABF_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
         <div className="container mx-auto px-4 max-w-7xl relative z-10">
@@ -92,32 +92,55 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Primary, Secondary, Tertiary CTAs */}
+            {/* Dynamic CTAs based on login state */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-3 w-full">
-              <Link
-                href="/students"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#F5DABF] text-[#6C151E] font-bold text-sm hover:bg-white active:scale-95 transition-all shadow-lg hover:shadow-xl"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>{t.heroPrimaryCta}</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/students"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#F5DABF] text-[#6C151E] font-bold text-sm hover:bg-white active:scale-95 transition-all shadow-lg hover:shadow-xl"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    <span>{isFaculty ? "Open Class Registers" : "View My Child's Dossier"}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
 
-              <Link
-                href="/assignments"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#0F3D3A] text-white font-bold text-sm hover:bg-[#165551] border border-[#D4AF37]/40 active:scale-95 transition-all shadow-md"
-              >
-                <Send className="w-4 h-4 text-[#F5DABF]" />
-                <span>{t.heroSecondaryCta}</span>
-              </Link>
+                  <Link
+                    href="/assignments"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#0F3D3A] text-white font-bold text-sm hover:bg-[#165551] border border-[#D4AF37]/40 active:scale-95 transition-all shadow-md"
+                  >
+                    <Send className="w-4 h-4 text-[#F5DABF]" />
+                    <span>{isFaculty ? "Dispatch Materials" : "Class Assignments"}</span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-[#F5DABF] text-[#6C151E] font-bold text-sm hover:bg-white active:scale-95 transition-all shadow-lg hover:shadow-xl"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>{language === "mr" ? "पोर्टलमध्ये प्रवेश करा (Sign In)" : "Sign In / Log In to Portal"}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
 
-              <Link
-                href="/inquiries"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF7F2] font-semibold text-sm border border-white/20 active:scale-95 transition-all"
-              >
-                <GraduationCap className="w-4 h-4" />
-                <span>{t.heroTertiaryCta}</span>
-              </Link>
+                  <a
+                    href="#faculty-section"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF7F2] font-semibold text-sm border border-white/20 active:scale-95 transition-all"
+                  >
+                    <GraduationCap className="w-4 h-4" />
+                    <span>{language === "mr" ? "शिक्षकवृंद पहा" : "View Faculty Profiles"}</span>
+                  </a>
+
+                  <a
+                    href="#gallery-section"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF7F2] font-semibold text-sm border border-white/20 active:scale-95 transition-all"
+                  >
+                    <ImageIcon className="w-4 h-4" />
+                    <span>{language === "mr" ? "शालेय गॅलरी" : "Campus Gallery"}</span>
+                  </a>
+                </>
+              )}
             </div>
 
             {/* Quick trust metrics */}
@@ -139,7 +162,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. STATS BANNER - OVERLAPPING THE HERO */}
+      {/* 2. STATS BANNER */}
       <section className="container mx-auto px-4 max-w-7xl -mt-14 relative z-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white rounded-2xl shadow-xl border-2 border-[#E8CFB5] p-6 text-center">
           <div className="p-2 space-y-1">
@@ -199,7 +222,6 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
           <div className="bg-white p-6 rounded-2xl border-2 border-stone-200/90 hover:border-[#6C151E] shadow-xs hover:shadow-lg transition-all duration-200 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-[#FAF7F2] text-[#6C151E] border border-[#E8CFB5] flex items-center justify-center">
               <ShieldCheck className="w-6 h-6" />
@@ -208,7 +230,6 @@ export default function HomePage() {
             <p className="text-xs text-stone-600 leading-relaxed">{t.feature1Desc}</p>
           </div>
 
-          {/* Card 2 */}
           <div className="bg-white p-6 rounded-2xl border-2 border-stone-200/90 hover:border-[#0F3D3A] shadow-xs hover:shadow-lg transition-all duration-200 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-[#E8F2F1] text-[#0F3D3A] border border-[#0F3D3A]/20 flex items-center justify-center">
               <Send className="w-6 h-6" />
@@ -217,7 +238,6 @@ export default function HomePage() {
             <p className="text-xs text-stone-600 leading-relaxed">{t.feature2Desc}</p>
           </div>
 
-          {/* Card 3 */}
           <div className="bg-white p-6 rounded-2xl border-2 border-stone-200/90 hover:border-[#C69214] shadow-xs hover:shadow-lg transition-all duration-200 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-[#FBF4DE] text-[#8C6B0D] border border-[#C69214]/30 flex items-center justify-center">
               <Award className="w-6 h-6" />
@@ -228,108 +248,188 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. CLASS REGISTERS DIRECTORY SHORTCUTS */}
-      <section className="container mx-auto px-4 max-w-7xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-stone-200 pb-4">
+      {/* 4. PUBLIC SPECTATOR SECTION: FACULTY PROFILES (Accessible without login) */}
+      <section id="faculty-section" className="container mx-auto px-4 max-w-7xl space-y-6 pt-4">
+        <div className="border-b border-stone-200 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <span className="text-xs font-bold text-[#6C151E] uppercase tracking-wider">
-              {language === "mr" ? "वर्गवार वर्गवारी" : "Quick Access"}
-            </span>
-            <h2 className="text-2xl font-extrabold text-stone-900">
-              {language === "mr" ? "इयत्ता १ ली ते ५ वी वर्ग नोंदवह्या" : "Classes 1 to 5 Digital Roster Hub"}
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#6C151E] uppercase tracking-wider mb-1">
+              <GraduationCap className="w-4 h-4 text-[#6C151E]" />
+              <span>{language === "mr" ? "आमचे समर्पित शिक्षकवृंद" : "Dedicated Faculty"}</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-900 tracking-tight">
+              {t.facultyTitle}
             </h2>
+            <p className="text-xs md:text-sm text-stone-600 mt-1">
+              {t.facultySubtitle}
+            </p>
           </div>
-          <Link
-            href="/students"
-            className="text-xs font-bold text-[#6C151E] hover:underline inline-flex items-center gap-1"
-          >
-            <span>{language === "mr" ? "सर्व नोंदवह्या पहा" : "View Entire Directory"}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {[
-            { cls: 1, nameEn: "Class 1", nameMr: "इयत्ता १ ली", descEn: "Foundational Literacy", descMr: "पायाभूत वाचन व अंकज्ञान" },
-            { cls: 2, nameEn: "Class 2", nameMr: "इयत्ता २ री", descEn: "Basic Arithmetic & EVS", descMr: "अंकगणित व परिसर ओळख" },
-            { cls: 3, nameEn: "Class 3", nameMr: "इयत्ता ३ री", descEn: "Reading Comprehension", descMr: "समजपूर्वक वाचन व लेखन" },
-            { cls: 4, nameEn: "Class 4", nameMr: "इयत्ता ४ थी", descEn: "Science & Geometry", descMr: "विज्ञान व भूमिती संकल्पना" },
-            { cls: 5, nameEn: "Class 5", nameMr: "इयत्ता ५ वी", descEn: "Scholarship & High School Prep", descMr: "शिष्यवृत्ती व माध्यमिक पूर्वतयारी" },
-          ].map((item) => (
-            <Link
-              key={item.cls}
-              href={`/students?class=${item.cls}`}
-              className="group bg-white p-5 rounded-2xl border-2 border-stone-200 hover:border-[#6C151E] shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {facultyMembers.map((member) => (
+            <div
+              key={member.id}
+              className="bg-white rounded-2xl border border-stone-200/90 hover:border-[#6C151E] shadow-xs hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col group"
             >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-[#6C151E] text-white flex items-center justify-center font-extrabold text-lg mb-3 group-hover:scale-105 transition-transform">
-                  {item.cls}
+              <div className="relative h-60 w-full bg-stone-100 overflow-hidden">
+                <Image
+                  src={member.photo_url}
+                  alt={member.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute bottom-3 left-3 right-3 text-white">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#6C151E] uppercase tracking-wide">
+                    {member.qualification}
+                  </span>
+                  <p className="text-xs font-medium text-stone-200 mt-1">
+                    {member.experienceYears} {language === "mr" ? "वर्षे अनुभव" : "Years Experience"}
+                  </p>
                 </div>
-                <h3 className="font-bold text-stone-900 text-sm group-hover:text-[#6C151E] transition-colors">
-                  {language === "mr" ? item.nameMr : item.nameEn}
-                </h3>
-                <p className="text-xs text-stone-500 mt-1 line-clamp-2">
-                  {language === "mr" ? item.descMr : item.descEn}
-                </p>
               </div>
 
-              <div className="pt-4 mt-3 border-t border-stone-100 flex items-center justify-between text-[11px] font-semibold text-[#6C151E]">
-                <span>{language === "mr" ? "नोंदवही उघडा" : "Open Register"}</span>
-                <span>›</span>
+              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                <div>
+                  <h3 className="font-bold text-stone-900 text-sm md:text-base leading-snug group-hover:text-[#6C151E] transition-colors">
+                    {member.name}
+                  </h3>
+                  <p className="text-xs text-[#0F3D3A] font-semibold mt-0.5">
+                    {language === "mr" ? member.designation_mr : member.designation}
+                  </p>
+                </div>
+
+                {member.email && (
+                  <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs">
+                    <span className="text-[11px] text-stone-500">Contact:</span>
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-stone-50 hover:bg-[#6C151E]/10 text-stone-700 hover:text-[#6C151E] text-[11px] font-medium transition-colors"
+                    >
+                      <Mail className="w-3.5 h-3.5 text-[#6C151E]" />
+                      <span>{member.email.split("@")[0]}</span>
+                    </a>
+                  </div>
+                )}
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* 5. LATEST BROADCASTS PREVIEW */}
-      <section className="container mx-auto px-4 max-w-7xl">
-        <div className="bg-[#FAF7F2] rounded-3xl border-2 border-[#E8CFB5] p-6 md:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <span className="text-xs font-bold text-[#0F3D3A] uppercase tracking-wider">
-                {language === "mr" ? "सूचना व गृहपाठ फलक" : "Noticeboard"}
-              </span>
-              <h2 className="text-xl md:text-2xl font-extrabold text-stone-900">
-                {language === "mr" ? "अलिकडील शैक्षणिक प्रसारणे" : "Recent Assignment Dispatches"}
-              </h2>
+      {/* 5. PUBLIC SPECTATOR SECTION: CAMPUS GALLERY (Accessible without login) */}
+      <section id="gallery-section" className="container mx-auto px-4 max-w-7xl space-y-6 pt-4">
+        <div className="border-b border-stone-200 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#0F3D3A] uppercase tracking-wider mb-1">
+              <ImageIcon className="w-4 h-4 text-[#0F3D3A]" />
+              <span>{language === "mr" ? "शालेय परिसर व उपक्रम" : "Campus Moments"}</span>
             </div>
-            <Link
-              href="/assignments"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0F3D3A] hover:underline"
-            >
-              <span>{language === "mr" ? "सर्व अभ्यास पहा" : "View All Dispatches"}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-900 tracking-tight">
+              {t.galleryTitle}
+            </h2>
+            <p className="text-xs md:text-sm text-stone-600 mt-1">
+              {t.gallerySubtitle}
+            </p>
           </div>
+          <Link
+            href="/gallery"
+            className="text-xs font-bold text-[#0F3D3A] hover:underline inline-flex items-center gap-1"
+          >
+            <span>{language === "mr" ? "संपूर्ण गॅलरी पहा" : "View Full Gallery"}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {initialAssignments.slice(0, 2).map((asg) => (
-              <div
-                key={asg.id}
-                className="bg-white p-5 rounded-xl border border-stone-200/90 shadow-xs space-y-3"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-[#6C151E] text-white">
-                    {asg.target_class
-                      ? (language === "mr" ? `इयत्ता ${asg.target_class}` : `Class ${asg.target_class}`)
-                      : (language === "mr" ? "सर्व वर्ग" : "All Classes")}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {galleryItems.slice(0, 6).map((item) => (
+            <div
+              key={item.id}
+              onClick={() => setActivePhoto(item)}
+              role="button"
+              tabIndex={0}
+              className="group bg-white rounded-2xl border border-stone-200/90 hover:border-[#6C151E] shadow-xs hover:shadow-lg transition-all duration-200 overflow-hidden cursor-pointer flex flex-col"
+            >
+              <div className="relative h-52 w-full bg-stone-100 overflow-hidden">
+                <Image
+                  src={item.image_url}
+                  alt={item.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#0F3D3A]/90 text-white backdrop-blur-xs">
+                    {language === "mr" ? item.category_mr : item.category}
                   </span>
-                  <span className="text-[11px] text-stone-500 font-mono">Format: {asg.media_type}</span>
-                </div>
-                <h4 className="font-bold text-stone-900 text-sm leading-snug">{asg.title}</h4>
-                <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed">{asg.content_text}</p>
-                <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs">
-                  <span className="text-stone-500">{asg.author_name}</span>
-                  <Link href="/assignments" className="text-[#6C151E] font-semibold hover:underline">
-                    {language === "mr" ? "तपशील पहा ›" : "Details ›"}
-                  </Link>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-stone-900 text-sm leading-snug group-hover:text-[#6C151E] transition-colors">
+                    {language === "mr" ? item.title_mr : item.title}
+                  </h3>
+                  <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed">
+                    {language === "mr" ? item.description_mr : item.description}
+                  </p>
+                </div>
+
+                <div className="pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
+                  <span className="flex items-center gap-1 text-[11px]">
+                    <Calendar className="w-3 h-3" />
+                    {item.date}
+                  </span>
+                  <span className="text-[#6C151E] font-semibold group-hover:underline text-[11px]">
+                    {language === "mr" ? "पहा ›" : "Expand ›"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
+
+      {/* Lightbox for Gallery */}
+      {activePhoto && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => setActivePhoto(null)}
+        >
+          <div
+            className="bg-white rounded-2xl overflow-hidden shadow-2xl max-w-3xl w-full border border-stone-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative aspect-video w-full bg-black">
+              <Image
+                src={activePhoto.image_url}
+                alt={activePhoto.title}
+                fill
+                className="object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => setActivePhoto(null)}
+                className="absolute top-3 right-3 p-2 rounded-full bg-black/60 text-white hover:bg-black transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-5 space-y-2">
+              <span className="px-2.5 py-0.5 rounded text-xs font-bold bg-[#0F3D3A] text-white">
+                {language === "mr" ? activePhoto.category_mr : activePhoto.category} • {activePhoto.date}
+              </span>
+              <h3 className="text-lg font-bold text-stone-900">
+                {language === "mr" ? activePhoto.title_mr : activePhoto.title}
+              </h3>
+              <p className="text-xs md:text-sm text-stone-600 leading-relaxed">
+                {language === "mr" ? activePhoto.description_mr : activePhoto.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 6. EXPANDABLE FAQ ACCORDION */}
       <section className="container mx-auto px-4 max-w-4xl space-y-6">
@@ -378,34 +478,34 @@ export default function HomePage() {
         <div className="bg-[#0F3D3A] text-white rounded-3xl p-8 md:p-12 shadow-xl border-4 border-[#D4AF37]/40 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
           <div className="space-y-2 max-w-2xl">
             <span className="text-xs font-bold uppercase tracking-wider text-[#F5DABF]">
-              {language === "mr" ? "प्रवेश सुरू आहे (२०२६-२७)" : "Admissions Open (2026-27)"}
+              {language === "mr" ? "अधिकृत डिजिटल पोर्टल" : "ZP Shilshet Digital Campus"}
             </span>
             <h2 className="text-2xl md:text-3xl font-black">
               {language === "mr"
-                ? "आपल्या पाल्याच्या उज्ज्वल भविष्यासाठी शिलशेत शाळेत प्रवेश घ्या"
-                : "Enroll Your Child at ZP Primary School Shilshet"}
+                ? "शालेय कामकाज व विद्यार्थी नोंदींसाठी पोर्टलमध्ये प्रवेश करा"
+                : "Access Registers & Homework Broadcasts"}
             </h2>
             <p className="text-xs md:text-sm text-stone-200">
               {language === "mr"
-                ? "डिजिटल वर्गखोल्या, मोफत गणवेश, पाठ्यपुस्तके, पोषण आहार आणि समर्पित शिक्षक."
-                : "Free uniforms, textbooks, nutritious Mid-Day Meal, and tech-enabled primary classrooms."}
+                ? "शिक्षकांसाठी संपूर्ण नोंदवही संपादन आणि पालकांसाठी गृहपाठ व शैक्षणिक प्रगती पाहण्याची सुविधा."
+                : "Faculty-exclusive registers with permanent records and parent access for homework & progress tracking."}
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 shrink-0">
             <Link
-              href="/inquiries"
-              className="px-6 py-3.5 rounded-xl bg-[#F5DABF] text-[#6C151E] font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-md active:scale-95"
+              href="/login"
+              className="px-7 py-3.5 rounded-xl bg-[#F5DABF] text-[#6C151E] font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
             >
-              {language === "mr" ? "ऑनलाईन प्रवेश अर्ज" : "Apply For Admission"}
+              <LogIn className="w-4 h-4" />
+              <span>{language === "mr" ? "प्रवेश (Sign In)" : "Sign In / Register"}</span>
             </Link>
-            <a
-              href="mailto:headmaster@zpshilshet.edu.in"
-              className="px-5 py-3.5 rounded-xl bg-[#165551] text-white border border-[#D4AF37]/50 font-bold text-xs uppercase tracking-wider hover:bg-[#1f726d] transition-all flex items-center justify-center gap-1.5"
+            <Link
+              href="/inquiries"
+              className="px-6 py-3.5 rounded-xl bg-[#165551] text-white border border-[#D4AF37]/50 font-bold text-xs uppercase tracking-wider hover:bg-[#1f726d] transition-all flex items-center justify-center gap-2"
             >
-              <Mail className="w-3.5 h-3.5" />
-              <span>{language === "mr" ? "ई-मेल संपर्क" : "Office Email"}</span>
-            </a>
+              <span>{language === "mr" ? "नवीन प्रवेश अर्ज" : "Apply For Admission"}</span>
+            </Link>
           </div>
         </div>
       </section>
