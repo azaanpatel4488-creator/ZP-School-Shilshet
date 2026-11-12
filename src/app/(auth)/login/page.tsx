@@ -252,7 +252,7 @@ export default function LoginPage() {
                     autoComplete="off"
                     value={schoolEmail}
                     onChange={(e) => setSchoolEmail(e.target.value)}
-                    placeholder={language === "mr" ? "उदा. zpshilshet@gmail.com" : "e.g. zpshilshet@gmail.com"}
+                    placeholder={language === "mr" ? "उदा. school448@gmail.com" : "e.g. school448@gmail.com"}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#6C151E]"
                   />
                 </div>
@@ -271,7 +271,7 @@ export default function LoginPage() {
                     autoComplete="off"
                     value={facultyEmail}
                     onChange={(e) => setFacultyEmail(e.target.value)}
-                    placeholder={language === "mr" ? "उदा. patelakbar1679@gmail.com" : "e.g. patelakbar1679@gmail.com"}
+                    placeholder={language === "mr" ? "उदा. faculty448@gmail.com" : "e.g. faculty448@gmail.com"}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#6C151E]"
                   />
                 </div>
@@ -296,7 +296,7 @@ export default function LoginPage() {
                     autoComplete="new-password"
                     value={facultyPassword}
                     onChange={(e) => setFacultyPassword(e.target.value)}
-                    placeholder="••••••••••••"
+                    placeholder={language === "mr" ? "उदा. ०१२३४५" : "e.g. 012345"}
                     className="w-full pl-9 pr-10 py-2.5 text-xs rounded-xl border border-stone-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#6C151E]"
                   />
                   <button
@@ -361,7 +361,7 @@ export default function LoginPage() {
                     autoComplete="off"
                     value={grNumber}
                     onChange={(e) => setGrNumber(e.target.value.replace(/\D/g, ""))}
-                    placeholder={language === "mr" ? "उदा. १०४१" : "e.g. 1041"}
+                    placeholder={language === "mr" ? "उदा. ४४८" : "e.g. 448"}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#0F3D3A]"
                   />
                 </div>
@@ -384,7 +384,7 @@ export default function LoginPage() {
                       autoComplete="off"
                       value={last6Mobile}
                       onChange={(e) => setLast6Mobile(e.target.value.replace(/\D/g, ""))}
-                      placeholder={language === "mr" ? "उदा. ४१२०९१" : "e.g. 412091"}
+                      placeholder={language === "mr" ? "उदा. ०१२३४५" : "e.g. 012345"}
                       className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-stone-300 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#0F3D3A]"
                     />
                   </div>
@@ -410,7 +410,7 @@ export default function LoginPage() {
                     autoComplete="new-password"
                     value={parentPassword}
                     onChange={(e) => setParentPassword(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder={language === "mr" ? "उदा. ०१२३४५" : "e.g. 012345"}
                     className="w-full pl-9 pr-10 py-2.5 text-xs rounded-xl border border-stone-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#0F3D3A]"
                   />
                   <button
