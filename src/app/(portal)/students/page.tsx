@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { StudentCard } from "@/components/StudentCard";
 import { StudentDetailModal } from "@/components/StudentDetailModal";
 import { AddStudentForm } from "@/components/AddStudentForm";
+import { ReportCardModal } from "@/components/ReportCardModal";
 import {
   Users,
   Search,
@@ -46,6 +47,8 @@ function StudentsContent() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [reportCardStudent, setReportCardStudent] = useState<Student | null>(null);
+  const [isReportCardOpen, setIsReportCardOpen] = useState(false);
 
   // Sync initialClass param if user navigated with ?class=N
   useEffect(() => {
@@ -244,12 +247,27 @@ function StudentsContent() {
                 </h3>
               </div>
             </div>
-            <Link
-              href="/assignments"
-              className="px-3.5 py-2 rounded-lg bg-[#0F3D3A] text-white text-xs font-bold hover:bg-[#165551] transition-colors"
-            >
-              {language === "mr" ? "आजचा गृहपाठ पहा ›" : "View Today's Homework ›"}
-            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              {parentChild && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReportCardStudent(parentChild);
+                    setIsReportCardOpen(true);
+                  }}
+                  className="px-3.5 py-2 rounded-lg bg-[#D4AF37] text-stone-900 text-xs font-bold hover:bg-[#C69214] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>{language === "mr" ? "प्रगती पुस्तक (Report Card)" : "View Report Card"}</span>
+                </button>
+              )}
+              <Link
+                href="/assignments"
+                className="px-3.5 py-2 rounded-lg bg-[#0F3D3A] text-white text-xs font-bold hover:bg-[#165551] transition-colors"
+              >
+                {language === "mr" ? "आजचा गृहपाठ पहा ›" : "View Today's Homework ›"}
+              </Link>
+            </div>
           </div>
         </div>
       )}
@@ -376,6 +394,20 @@ function StudentsContent() {
           setIsFormOpen(true);
         }}
         onDelete={handleDeleteStudent}
+        onOpenReportCard={(stu) => {
+          setReportCardStudent(stu);
+          setIsReportCardOpen(true);
+        }}
+      />
+
+      {/* Virtual Report Card Modal (प्रगती पुस्तक) */}
+      <ReportCardModal
+        student={reportCardStudent}
+        isOpen={isReportCardOpen}
+        onClose={() => {
+          setIsReportCardOpen(false);
+          setReportCardStudent(null);
+        }}
       />
 
       {/* Add / Edit Student Form: Faculty only */}

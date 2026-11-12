@@ -15,6 +15,27 @@ export interface Student {
   caste_category: "General" | "SC" | "ST" | "OBC" | "VJNT" | "SBC" | "EWS" | string;
   study_iq_score: number; // 0 to 100
   photo_url?: string;
+  report_card?: ReportCardData;
+}
+
+export interface SubjectEvaluation {
+  subject: string;
+  subject_mr: string;
+  grade: "A+" | "A" | "B+" | "B" | "C";
+  score?: number;
+}
+
+export interface ReportCardData {
+  academic_year: string;
+  term: string;
+  term_mr: string;
+  issue_date: string;
+  attendance_days: string;
+  evaluations: SubjectEvaluation[];
+  teacher_comments: string;
+  teacher_comments_mr: string;
+  teacher_name: string;
+  teacher_name_mr: string;
 }
 
 export type MediaType = "text" | "image" | "document" | "youtube" | "url";

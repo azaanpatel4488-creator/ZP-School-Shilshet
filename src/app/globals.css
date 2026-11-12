@@ -49,3 +49,22 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #6C151E;
 }
+
+/* Print optimizations for Report Card */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  header, nav, footer, #scroll-progress, .no-print {
+    display: none !important;
+  }
+}

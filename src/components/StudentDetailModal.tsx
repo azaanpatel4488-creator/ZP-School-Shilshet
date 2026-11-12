@@ -17,6 +17,7 @@ import {
   Trash2,
   User,
   ExternalLink,
+  Award,
 } from "lucide-react";
 
 interface StudentDetailModalProps {
@@ -25,6 +26,7 @@ interface StudentDetailModalProps {
   onClose: () => void;
   onEdit: (student: Student) => void;
   onDelete: (id: string) => void;
+  onOpenReportCard?: (student: Student) => void;
 }
 
 export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
@@ -33,6 +35,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
   onClose,
   onEdit,
   onDelete,
+  onOpenReportCard,
 }) => {
   const { t, language } = useLanguage();
   const { isAuthenticated, isFaculty } = useAuth();
@@ -239,6 +242,19 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
           </button>
 
           <div className="flex items-center gap-2">
+            {onOpenReportCard && (
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenReportCard(student);
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-[#D4AF37] hover:bg-[#C69214] text-stone-900 active:scale-95 transition-all shadow-sm"
+              >
+                <Award className="w-3.5 h-3.5" />
+                <span>{language === "mr" ? "प्रगती पुस्तक (Report Card)" : "View Report Card"}</span>
+              </button>
+            )}
+
             {isFaculty && (
               <>
                 <button
