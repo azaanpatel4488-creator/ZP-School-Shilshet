@@ -33,7 +33,7 @@ export const Footer: React.FC = () => {
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#165551] text-[#F5DABF] text-[11px] font-mono border border-emerald-900/50">
               <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>U-DISE: 27211105401</span>
+              <span>U-DISE: 27361809501</span>
             </div>
           </div>
 
@@ -123,12 +123,6 @@ export const Footer: React.FC = () => {
                     ? "जि.प. प्राथमिक शाळा, मु. पो. शिलशेत, ता. मोखाडा, जि. पालघर - ४०१६०४"
                     : "ZP Primary School, At Post Shilshet, Taluka Mokhada, District Palghar, Maharashtra - 401604"}
                 </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#F5DABF] shrink-0" />
-                <a href="tel:9823000001" className="hover:text-white hover:underline font-mono">
-                  +91 98230 00001
-                </a>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#F5DABF] shrink-0" />

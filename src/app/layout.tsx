@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     "Mokhada Palghar ZP School",
     "Digital Student Register",
     "Maharashtra Primary Education",
-    "U-DISE 27211105401",
+    "U-DISE 27361809501",
     "School Management Portal",
   ],
   authors: [{ name: "ZP School Shilshet Administration" }],

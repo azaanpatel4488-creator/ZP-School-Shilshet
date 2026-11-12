@@ -48,7 +48,7 @@ export default function NotFound() {
         </div>
 
         <div className="pt-4 border-t border-stone-100 text-[11px] text-stone-400">
-          <span>ZP Primary School Shilshet • U-DISE: 27211105401</span>
+          <span>ZP Primary School Shilshet • U-DISE: 27361809501</span>
         </div>
       </div>
     </div>

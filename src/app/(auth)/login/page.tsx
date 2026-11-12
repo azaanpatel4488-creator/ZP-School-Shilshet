@@ -170,7 +170,7 @@ export default function LoginPage() {
 
           <div className="text-center pt-2 text-[11px] text-stone-400 flex items-center justify-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5 text-stone-500" />
-            <span>Encrypted Session • U-DISE 27211105401</span>
+            <span>Encrypted Session • U-DISE 27361809501</span>
           </div>
         </div>
       </div>

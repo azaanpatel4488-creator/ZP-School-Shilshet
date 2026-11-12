@@ -27,30 +27,15 @@ export const FloatingContactButton: React.FC = () => {
 
           <div className="space-y-2.5">
             <a
-              href="tel:9823000001"
+              href="/inquiries"
               className="flex items-center gap-2.5 p-2 rounded-lg bg-stone-50 hover:bg-[#F5DABF]/40 text-stone-800 hover:text-[#6C151E] transition-colors"
             >
               <div className="w-7 h-7 rounded-full bg-[#6C151E] text-white flex items-center justify-center shrink-0">
-                <Phone className="w-3.5 h-3.5" />
-              </div>
-              <div className="text-xs">
-                <p className="font-semibold">{language === "mr" ? "मुख्याध्यापक थेट कॉल" : "Call Headmaster"}</p>
-                <p className="text-stone-500 font-mono">+91 98230 00001</p>
-              </div>
-            </a>
-
-            <a
-              href="https://wa.me/919823000001?text=Namaste%2C%20I%20am%20inquiring%20about%20ZP%20Primary%20School%20Shilshet"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2.5 p-2 rounded-lg bg-stone-50 hover:bg-[#0F3D3A]/10 text-stone-800 hover:text-[#0F3D3A] transition-colors"
-            >
-              <div className="w-7 h-7 rounded-full bg-[#0F3D3A] text-white flex items-center justify-center shrink-0">
                 <MessageSquare className="w-3.5 h-3.5" />
               </div>
               <div className="text-xs">
-                <p className="font-semibold">{language === "mr" ? "व्हॉट्सॲप चौकशी" : "WhatsApp Desk"}</p>
-                <p className="text-stone-500">{language === "mr" ? "थेट संदेश पाठवा" : "Direct Message"}</p>
+                <p className="font-semibold">{language === "mr" ? "ऑनलाईन प्रवेश चौकशी" : "Admission Inquiry Desk"}</p>
+                <p className="text-stone-500">{language === "mr" ? "थेट अर्ज सादर करा" : "Submit Query Directly"}</p>
               </div>
             </a>
 

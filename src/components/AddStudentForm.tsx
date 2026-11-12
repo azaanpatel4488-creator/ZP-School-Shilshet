@@ -76,7 +76,7 @@ export const AddStudentForm: React.FC<AddStudentFormProps> = ({
       setMotherName("");
       setRegisterNumber("");
       setAadhaarNumber("");
-      setPenId("272111054");
+      setPenId("273618095");
       setMobileNumber("");
       setBankName("Bank of Maharashtra");
       setBankAccountNo("");
@@ -375,7 +375,7 @@ export const AddStudentForm: React.FC<AddStudentFormProps> = ({
                 maxLength={11}
                 value={penId}
                 onChange={(e) => setPenId(e.target.value.toUpperCase())}
-                placeholder="27211105401"
+                placeholder="27361809501"
                 className={`w-full px-3 py-2 text-xs rounded-lg border font-mono bg-white focus:outline-none focus:ring-2 ${
                   errors.penId ? "border-rose-500 focus:ring-rose-500" : "border-stone-300 focus:ring-[#6C151E]"
                 }`}

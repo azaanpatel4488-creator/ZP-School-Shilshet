@@ -47,11 +47,11 @@ export const Navbar: React.FC = () => {
           <span className="truncate">
             {language === "mr"
               ? "महाराष्ट्र शासन • जिल्हा परिषद ठाणे / पालघर • प्राथमिक शिक्षण विभाग"
-              : "Govt. of Maharashtra • Rural Education Directorate • U-DISE: 27211105401"}
+              : "Govt. of Maharashtra • Rural Education Directorate • U-DISE: 27361809501"}
           </span>
           <div className="hidden sm:flex items-center gap-4 text-[11px]">
-            <a href="tel:9823000001" className="hover:text-white transition-colors">
-              📞 +91 98230 00001
+            <a href="mailto:headmaster@zpshilshet.edu.in" className="hover:text-white transition-colors">
+              ✉️ headmaster@zpshilshet.edu.in
             </a>
             <span className="text-stone-400">|</span>
             <span className="text-[#F5DABF] font-mono">Affiliation: MSBSHSE</span>

@@ -89,28 +89,22 @@ export default function GalleryPage() {
                   </p>
                 </div>
 
-                {/* Direct Contact links */}
-                <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs">
-                  {member.phone && (
-                    <a
-                      href={`tel:${member.phone}`}
-                      className="inline-flex items-center gap-1.5 text-stone-700 hover:text-[#6C151E] font-medium"
-                      title="Call teacher"
-                    >
-                      <Phone className="w-3.5 h-3.5 text-[#6C151E]" />
-                      <span>{member.phone}</span>
-                    </a>
-                  )}
-                  {member.email && (
+                {/* Official Contact link */}
+                {member.email && (
+                  <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs">
+                    <span className="text-[11px] text-stone-500 font-medium">
+                      {language === "mr" ? "अधिकृत ई-मेल" : "Official Contact"}
+                    </span>
                     <a
                       href={`mailto:${member.email}`}
-                      className="p-1.5 rounded-md hover:bg-stone-100 text-stone-600 hover:text-[#6C151E]"
-                      title="Email teacher"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-stone-50 hover:bg-[#6C151E]/10 text-stone-700 hover:text-[#6C151E] font-medium transition-colors text-[11px]"
+                      title="Email faculty"
                     >
-                      <Mail className="w-3.5 h-3.5" />
+                      <Mail className="w-3.5 h-3.5 text-[#6C151E]" />
+                      <span>{member.email.split("@")[0]}</span>
                     </a>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}

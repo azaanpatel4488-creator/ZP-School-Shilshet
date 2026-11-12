@@ -101,7 +101,7 @@ export interface DictionaryStrings {
 export const dictionary: Record<Language, DictionaryStrings> = {
   en: {
     schoolName: "ZP Primary School Shilshet",
-    schoolSubtitle: "Taluka Mokhada, District Palghar • U-DISE: 27211105401",
+    schoolSubtitle: "Taluka Mokhada, District Palghar • U-DISE: 27361809501",
     schoolTagline: "Nurturing Young Minds through Knowledge, Values & Digital Empowerment",
     navHome: "Home",
     navStudents: "Student Records",
@@ -198,7 +198,7 @@ export const dictionary: Record<Language, DictionaryStrings> = {
   },
   mr: {
     schoolName: "जि.प. प्राथमिक शाळा शिलशेत",
-    schoolSubtitle: "तालुका मोखाडा, जिल्हा पालघर • यु-डायस: २७२१११०५४०१",
+    schoolSubtitle: "तालुका मोखाडा, जिल्हा पालघर • यु-डायस: २७३६१८०९५०१",
     schoolTagline: "ज्ञान, संस्कार आणि डिजिटल सक्षमीकरणातून बालमनांची घडण",
     navHome: "मुख्यपृष्ठ",
     navStudents: "विद्यार्थी नोंदी",

@@ -124,7 +124,7 @@ export default function HomePage() {
             <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-[#F5DABF]/80 font-medium">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
-                U-DISE 27211105401
+                U-DISE 27361809501
               </span>
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
@@ -400,10 +400,11 @@ export default function HomePage() {
               {language === "mr" ? "ऑनलाईन प्रवेश अर्ज" : "Apply For Admission"}
             </Link>
             <a
-              href="tel:9823000001"
-              className="px-5 py-3.5 rounded-xl bg-[#165551] text-white border border-[#D4AF37]/50 font-bold text-xs uppercase tracking-wider hover:bg-[#1f726d] transition-all"
+              href="mailto:headmaster@zpshilshet.edu.in"
+              className="px-5 py-3.5 rounded-xl bg-[#165551] text-white border border-[#D4AF37]/50 font-bold text-xs uppercase tracking-wider hover:bg-[#1f726d] transition-all flex items-center justify-center gap-1.5"
             >
-              📞 98230 00001
+              <Mail className="w-3.5 h-3.5" />
+              <span>{language === "mr" ? "ई-मेल संपर्क" : "Office Email"}</span>
             </a>
           </div>
         </div>

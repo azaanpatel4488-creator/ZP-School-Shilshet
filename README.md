@@ -1,4 +1,4 @@
-# ZP Primary School Shilshet Management Portal
+43# ZP Primary School Shilshet Management Portal
 **जि.प. प्राथमिक शाळा शिलशेत (तालुका मोखाडा, जिल्हा पालघर)**
 **Institutional Faculty Management & Digital Record Protection System (Classes 1 to 5)**
 
@@ -114,5 +114,5 @@ npm start
 ## 🏛️ School Information
 - **Institution:** Zilla Parishad Primary School Shilshet (जि.प. प्राथमिक शाळा शिलशेत)
 - **Location:** At Post Shilshet, Taluka Mokhada, District Palghar, Maharashtra - 401604
-- **U-DISE Code:** 27211105401
+- **U-DISE Code:** 27361809501
 - **Governing Body:** Department of School Education and Sports, Government of Maharashtra

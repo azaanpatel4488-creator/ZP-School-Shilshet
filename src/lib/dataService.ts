@@ -2,9 +2,9 @@ import { Student, Assignment, Inquiry } from "@/types";
 import { initialStudents, initialAssignments, initialInquiries } from "./mockData";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
-const STORAGE_KEY_STUDENTS = "zp_students_v1";
-const STORAGE_KEY_ASSIGNMENTS = "zp_assignments_v1";
-const STORAGE_KEY_INQUIRIES = "zp_inquiries_v1";
+const STORAGE_KEY_STUDENTS = "zp_students_v2";
+const STORAGE_KEY_ASSIGNMENTS = "zp_assignments_v2";
+const STORAGE_KEY_INQUIRIES = "zp_inquiries_v2";
 
 function getLocalData<T>(key: string, fallback: T[]): T[] {
   if (typeof window === "undefined") return fallback;
