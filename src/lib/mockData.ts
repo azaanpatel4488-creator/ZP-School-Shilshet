@@ -284,14 +284,25 @@ export const initialStudents: Student[] = [
 
 export const initialAssignments: Assignment[] = [
   {
+    id: "asg-00",
+    created_at: "2026-11-12T09:00:00Z",
+    target_class: null, // All Classes
+    title: "शिक्षकांचा व्हॉईस संदेश: मराठी शुद्धलेखन व पाढे पाठांतर सूचना",
+    content_text: "सर्व वर्गांच्या पालकांनी व विद्यार्थ्यांनी हा व्हॉईस संदेश ऐकावा. उद्या वर्गात मराठी वाचन व पाढे पाठांतर सराव घेतला जाईल. दररोज ३० मिनिटे मोठ्याने वाचनाचा सराव करा.",
+    media_type: "audio",
+    audio_url: "https://actions.google.com/sounds/v1/ambiences/outdoor_festival.ogg",
+    faculty_id: "fac-akbar",
+    author_name: "श्री. अकबर पटेल (शिक्षक)",
+  },
+  {
     id: "asg-01",
     created_at: "2026-11-10T14:30:00Z",
     target_class: null, // All Classes
     title: "National Constitution Day (संविधान दिन) Essay & Drawing Activity",
     content_text: "सर्व वर्गांच्या विद्यार्थ्यांनी २६ नोव्हेंबर संविधान दिनानिमित्त 'भारतीय संविधान व आपले हक्क' या विषयावर चित्रकला अथवा निबंध तयार करून सोमवारी शाळेत आणायचा आहे.",
     media_type: "text",
-    faculty_id: "fac-patil",
-    author_name: "Shri. R. M. Patil (Headmaster)",
+    faculty_id: "fac-akbar",
+    author_name: "श्री. अकबर पटेल (शिक्षक)",
   },
   {
     id: "asg-02",

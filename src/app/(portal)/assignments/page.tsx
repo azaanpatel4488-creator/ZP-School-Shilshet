@@ -8,6 +8,8 @@ import { getAssignments, createAssignment } from "@/lib/dataService";
 import { uploadAssignmentFile } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import { MarathiSpeakerButton } from "@/components/ui/MarathiSpeakerButton";
+import { VoiceNotePlayer } from "@/components/ui/VoiceNotePlayer";
 import { toast } from "sonner";
 import {
   Send,
@@ -28,6 +30,7 @@ import {
   CheckCircle,
   Lock,
   LogIn,
+  Mic,
   UserCheck,
 } from "lucide-react";
 
@@ -354,14 +357,28 @@ export default function AssignmentsPage() {
 
                 {/* Content */}
                 <div className="p-5 md:p-6 space-y-4">
-                  <h3 className="text-lg font-bold text-stone-900 leading-snug">
-                    {item.title}
-                  </h3>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <h3 className="text-lg font-bold text-stone-900 leading-snug">
+                      {item.title}
+                    </h3>
+                    <MarathiSpeakerButton
+                      text={`${item.title}. ${item.content_text || ""}`}
+                      label={language === "mr" ? "मराठीत ऐका" : "Listen in Marathi"}
+                    />
+                  </div>
 
                   {item.content_text && (
-                    <div className="text-xs md:text-sm text-stone-700 leading-relaxed whitespace-pre-line bg-stone-50/50 p-4 rounded-lg border border-stone-100">
+                    <div className="text-xs md:text-sm text-stone-700 leading-relaxed whitespace-pre-line bg-stone-50/50 p-4 rounded-lg border border-stone-100 font-serif">
                       {item.content_text}
                     </div>
+                  )}
+
+                  {/* Teacher Voice Note Player */}
+                  {(item.media_type === "audio" || item.audio_url) && (
+                    <VoiceNotePlayer
+                      audioUrl={item.audio_url || item.media_url}
+                      teacherName={item.author_name}
+                    />
                   )}
 
                   {/* Multi-Format Payload Renderers */}
@@ -535,9 +552,10 @@ export default function AssignmentsPage() {
                 <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
                   {language === "mr" ? "माध्यम स्वरूप निवडा" : "Payload Format"}
                 </label>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   {[
                     { id: "text", label: "Note / Text", icon: FileText },
+                    { id: "audio", label: language === "mr" ? "🎙️ व्हॉईस संदेश" : "🎙️ Voice Note", icon: Mic },
                     { id: "youtube", label: "YouTube", icon: Video },
                     { id: "document", label: "PDF / Doc", icon: Download },
                     { id: "url", label: "Web Link", icon: LinkIcon },
@@ -555,7 +573,7 @@ export default function AssignmentsPage() {
                         }`}
                       >
                         <Icon className="w-4 h-4" />
-                        <span>{fmt.label}</span>
+                        <span className="truncate">{fmt.label}</span>
                       </button>
                     );
                   })}
@@ -563,6 +581,34 @@ export default function AssignmentsPage() {
               </div>
 
               {/* URL or File input based on format */}
+              {mediaType === "audio" && (
+                <div className="space-y-1.5 p-3 rounded-xl bg-stone-50 border border-stone-200">
+                  <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+                    {language === "mr" ? "व्हॉईस रेकॉर्डिंग / ऑडिओ URL" : "Voice Recording / Audio URL"}
+                  </label>
+                  <input
+                    type="url"
+                    value={mediaUrl}
+                    onChange={(e) => setMediaUrl(e.target.value)}
+                    placeholder="https://example.com/voice-note.mp3"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-stone-300 font-mono bg-white focus:outline-none focus:ring-2 focus:ring-[#6C151E]"
+                  />
+                  <div className="flex items-center gap-2 pt-1 text-[11px] text-stone-500">
+                    <span>{language === "mr" ? "नमुना ऑडिओ निवडा:" : "Quick Sample:"}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMediaUrl(
+                          "https://actions.google.com/sounds/v1/ambiences/outdoor_festival.ogg"
+                        )
+                      }
+                      className="px-2 py-0.5 rounded bg-white border border-stone-300 hover:border-[#0F3D3A] text-[#0F3D3A] font-semibold"
+                    >
+                      🎵 {language === "mr" ? "शालेय ऑडिओ क्लिप" : "Sample Clip"}
+                    </button>
+                  </div>
+                </div>
+              )}
               {mediaType === "youtube" && (
                 <div>
                   <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">

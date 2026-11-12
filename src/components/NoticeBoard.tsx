@@ -13,6 +13,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { NoticeFormModal } from "./NoticeFormModal";
 import { NoticeDetailModal } from "./NoticeDetailModal";
+import { MarathiSpeakerButton } from "@/components/ui/MarathiSpeakerButton";
 import {
   Bell,
   Calendar,
@@ -325,12 +326,22 @@ export const NoticeBoard: React.FC = () => {
                     </div>
 
                     {/* Card Footer */}
-                    <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
-                      <span className="text-[11px] font-mono">
-                        {formatDate(notice.created_at)}
-                      </span>
+                    <div className="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2 text-xs text-stone-500">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-mono">
+                          {formatDate(notice.created_at)}
+                        </span>
+                        <MarathiSpeakerButton
+                          text={`${isMr ? notice.title_mr : notice.title}. ${
+                            isMr ? notice.content_mr || notice.content : notice.content
+                          }`}
+                          size="sm"
+                          label={isMr ? "ऐका" : "Listen"}
+                        />
+                      </div>
+
                       <span className="text-[11px] font-bold text-[#6C151E] flex items-center group-hover:translate-x-0.5 transition-transform">
-                        <span>{isMr ? "सविस्तर वाचा" : "View Notice"}</span>
+                        <span>{isMr ? "सविस्तर वाचा" : "View"}</span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </span>
                     </div>
@@ -372,3 +383,4 @@ export const NoticeBoard: React.FC = () => {
     </section>
   );
 };
+

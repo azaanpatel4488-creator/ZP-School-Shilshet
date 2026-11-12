@@ -5,6 +5,8 @@ import Image from "next/image";
 import { SchoolNotice } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import { MarathiSpeakerButton } from "@/components/ui/MarathiSpeakerButton";
+import { VoiceNotePlayer } from "@/components/ui/VoiceNotePlayer";
 import {
   X,
   Share2,
@@ -146,22 +148,41 @@ export const NoticeDetailModal: React.FC<NoticeDetailModalProps> = ({
               <p className="text-xs text-stone-500 font-sans mt-0.5">{notice.title}</p>
             )}
 
-            {/* Micro Metadata */}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-stone-500 mt-3 pt-3 border-t border-stone-100">
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#6C151E]" />
-                <span>{formattedDate}</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[#0F3D3A]" />
-                <span>{notice.author_name}</span>
-              </span>
-              <span className="text-stone-400">|</span>
-              <span className="font-mono text-[11px] text-stone-500">
-                UDISE: 27361809501
-              </span>
+            {/* Micro Metadata & Marathi Read-Aloud Speaker Button */}
+            <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-stone-500 mt-3 pt-3 border-t border-stone-100">
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-[#6C151E]" />
+                  <span>{formattedDate}</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-[#0F3D3A]" />
+                  <span>{notice.author_name}</span>
+                </span>
+                <span className="text-stone-400">|</span>
+                <span className="font-mono text-[11px] text-stone-500">
+                  UDISE: 27361809501
+                </span>
+              </div>
+
+              {/* 1-Click Fluent Marathi Audio Reader */}
+              <MarathiSpeakerButton
+                text={`${isMr ? notice.title_mr : notice.title}. ${
+                  isMr ? notice.content_mr || notice.content : notice.content
+                }`}
+                size="sm"
+                label={isMr ? "मराठीत ऐका" : "Listen Aloud"}
+              />
             </div>
           </div>
+
+          {/* Teacher Voice Note if attached */}
+          {(notice.media_type === "audio" || notice.audio_url) && (
+            <VoiceNotePlayer
+              audioUrl={notice.audio_url || notice.media_url}
+              teacherName={notice.author_name}
+            />
+          )}
 
           {/* Media Presentation: Poster, Flyer, Image, GIF, Video */}
           {notice.media_type !== "text" && notice.media_url && (
@@ -291,3 +312,4 @@ export const NoticeDetailModal: React.FC<NoticeDetailModalProps> = ({
     </div>
   );
 };
+

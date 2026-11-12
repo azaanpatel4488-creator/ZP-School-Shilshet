@@ -62,7 +62,7 @@ export interface DailyAttendanceSummary {
 }
 
 export type NoticeCategory = "urgent" | "holiday" | "exam" | "event" | "general";
-export type NoticeMediaType = "text" | "image" | "flyer" | "gif" | "video";
+export type NoticeMediaType = "text" | "image" | "flyer" | "gif" | "video" | "audio";
 
 export interface SchoolNotice {
   id: string;
@@ -74,11 +74,12 @@ export interface SchoolNotice {
   category: NoticeCategory;
   media_type: NoticeMediaType;
   media_url?: string;
+  audio_url?: string;
   is_pinned?: boolean;
   author_name: string;
 }
 
-export type MediaType = "text" | "image" | "document" | "youtube" | "url";
+export type MediaType = "text" | "image" | "document" | "youtube" | "url" | "audio";
 
 export interface Assignment {
   id: string;
@@ -88,6 +89,7 @@ export interface Assignment {
   content_text?: string;
   media_type: MediaType;
   media_url?: string;
+  audio_url?: string;
   faculty_id?: string;
   author_name?: string;
 }
